@@ -181,6 +181,10 @@ img { max-width: 100%; display: block; }
 /* Parallax hero on mousemove */
 .hero-parallax { transition: transform .12s linear; will-change: transform; }
 
+/* Theme switch animation */
+.theme-switch-anim { animation: themePulse .42s ease; }
+@keyframes themePulse { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.01); filter: brightness(1.03); } 100% { transform: scale(1); filter: none; } }
+
 /* Responsive */
 @media (max-width: 980px) {
   .hero-inner { grid-template-columns: 1fr; }
