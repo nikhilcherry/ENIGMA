@@ -22,12 +22,21 @@
         $(window).trigger("scroll");
         $(window).trigger("resize");
 
-        // Hash menu forwarding
-        if ((window.location.hash) && ($(window.location.hash).length)){
-            var hash_offset = $(window.location.hash).offset().top;
-            $("html, body").animate({
-                scrollTop: hash_offset
-            });
+        // Hash menu forwarding (sanitized)
+        if (window.location.hash) {
+            try {
+                var rawHash = window.location.hash || '';
+                var cleanHash = rawHash.replace(/^#/, '').split(/[\?#]/)[0];
+                if (cleanHash) {
+                    var el = document.getElementById(cleanHash);
+                    if (el) {
+                        var hash_offset = $(el).offset().top;
+                        $("html, body").animate({ scrollTop: hash_offset });
+                    }
+                }
+            } catch(e) {
+                console.warn('Hash forwarding skipped due to invalid hash:', window.location.hash);
+            }
         }
 
     });
@@ -1265,17 +1274,25 @@ function initWorkFilter(){
      });
 
      if (window.location.hash) {
-         $(".filter").each(function(){
-             if ($(this).attr("data-filter") == "." + window.location.hash.replace("#", "")) {
-                 $(this).trigger('click');
+        try{
+            var rawHash = window.location.hash || '';
+            var cleanHash = rawHash.replace(/^#/, '').split(/[\?#]/)[0];
+            if (cleanHash) {
+                $(".filter").each(function(){
+                    if ($(this).attr("data-filter") == "." + cleanHash) {
+                        $(this).trigger('click');
 
-                 $("html, body").animate({
-                     scrollTop: $("#portfolio").offset().top
-                 });
+                        $("html, body").animate({
+                            scrollTop: $("#portfolio").offset().top
+                        });
 
-             }
-         });
-     }
+                    }
+                });
+            }
+        }catch(e){
+            console.warn('Filter hash processing skipped due to invalid hash:', window.location.hash);
+        }
+    }
 
      work_grid.imagesLoaded(function(){
          work_grid.isotope({
@@ -1724,4 +1741,3 @@ function notifyMe() {
       });
     }
   }
-  
