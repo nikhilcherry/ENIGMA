@@ -303,5 +303,24 @@
       });
     })();
   </script>
+  <script>
+    // Theme toggle
+    (function(){
+      try{
+        var input = document.getElementById('theme-toggle-input');
+        var bodyEl = document.body;
+        var key = 'site-theme';
+        function apply(t){
+          if(t === 'light') { bodyEl.classList.add('theme-light'); bodyEl.classList.remove('theme-dark'); }
+          else { bodyEl.classList.add('theme-dark'); bodyEl.classList.remove('theme-light'); }
+          bodyEl.classList.add('theme-switch-anim');
+          setTimeout(function(){ bodyEl.classList.remove('theme-switch-anim'); }, 500);
+        }
+        var saved = localStorage.getItem(key);
+        apply(saved === 'light' ? 'light' : 'dark');
+        if(input){ input.checked = (saved === 'light'); input.addEventListener('change', function(e){ var t = e.target.checked ? 'light' : 'dark'; localStorage.setItem(key,t); apply(t); }); }
+      }catch(e){ console.warn('Theme toggle init failed', e); }
+    })();
+  </script>
 </body>
 </html>
