@@ -13,6 +13,13 @@
   --ring: rgba(91,156,255,0.22);
 }
 
+/* Theme modes: default is dark via .theme-dark; .theme-light flips colors */
+.theme-dark { --bg: #0a0a0a; --bg-soft: #0f1113; --card: #111218; --text: #e8eaed; --muted: #b0b5bd; --accent: #5b9cff; --accent-2: #ff7ab6; --accent-3: #7efcde; }
+.theme-light { --bg: #ffffff; --bg-soft: #f7f8fb; --card: #ffffff; --text: #0b0b0b; --muted: #5a6470; --accent: #2f4fff; --accent-2: #ff4d9a; --accent-3: #00d1a6; }
+
+/* Smooth theme transitions */
+:root, body, .site-header, .section, .info-card, .masonry-placeholder, .site-footer { transition: background .36s ease, color .36s ease, border-color .36s ease, box-shadow .36s ease; }
+
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body.page-root {
