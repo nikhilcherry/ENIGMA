@@ -194,6 +194,28 @@
 
   <!-- Scripts from legacy for consistency -->
   <script src="downloaded_site/www.ecellnmit.in/js/jquery-3.5.1.min.js"></script>
+  <script>
+    // Guard against invalid CSS selectors (e.g. location.hash like "#?reload=...")
+    (function(){
+      if (!window.jQuery) return;
+      var _$ = window.jQuery;
+      var jQueryGuard = function(selector, context){
+        try{
+          return _$ (selector, context);
+        }catch(e){
+          if (e && /unrecognized expression/.test(e.message)){
+            // return empty jQuery object instead of throwing
+            return _$(document.createDocumentFragment());
+          }
+          throw e;
+        }
+      };
+      // copy properties
+      for (var k in _$) if (_$.hasOwnProperty(k)) jQueryGuard[k] = _$[k];
+      jQueryGuard.fn = _$.fn;
+      window.jQuery = window.$ = jQueryGuard;
+    })();
+  </script>
   <script src="downloaded_site/www.ecellnmit.in/js/bootstrap.min.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
