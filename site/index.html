@@ -198,5 +198,79 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+  <script>
+    // Custom cursor + interactions
+    (function(){
+      if(('ontouchstart' in window) || window.matchMedia('(hover: none)').matches) return; // skip on touch
+      const cursor = document.createElement('div');
+      const trail = document.createElement('div');
+      cursor.className = 'custom-cursor';
+      trail.className = 'cursor-trail';
+      document.body.appendChild(trail);
+      document.body.appendChild(cursor);
+
+      let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+      let trailX = mouseX, trailY = mouseY;
+
+      window.addEventListener('mousemove', e=>{
+        mouseX = e.clientX; mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+      });
+
+      // lightweight trail interpolation
+      function loop(){
+        trailX += (mouseX - trailX) * 0.14;
+        trailY += (mouseY - trailY) * 0.14;
+        trail.style.left = trailX + 'px'; trail.style.top = trailY + 'px';
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      // hover states
+      const hoverGrow = (el)=>{
+        cursor.style.transform = 'translate(-50%,-50%) scale(1.9)';
+        cursor.style.background = 'linear-gradient(90deg,var(--accent),var(--accent-2))';
+        cursor.style.boxShadow = '0 0 30px rgba(47,128,255,0.28), 0 0 60px rgba(255,122,182,0.12)';
+        trail.style.opacity = '1';
+      };
+      const hoverShrink = ()=>{
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        cursor.style.background = 'rgba(255,255,255,0.9)';
+        cursor.style.boxShadow = '0 0 18px rgba(47,128,255,0.85), 0 0 36px rgba(127,212,255,0.18)';
+        trail.style.opacity = '0.85';
+      };
+      document.querySelectorAll('a, .btn, button, .info-card, .masonry-item img').forEach(el=>{
+        el.addEventListener('mouseenter', ()=> hoverGrow(el));
+        el.addEventListener('mouseleave', ()=> hoverShrink());
+      });
+
+      // parallax effect for hero image
+      const heroImg = document.querySelector('.hero-image');
+      const heroInner = document.querySelector('.hero-inner');
+      if(heroImg && heroInner){
+        heroInner.addEventListener('mousemove', e=>{
+          const rect = heroInner.getBoundingClientRect();
+          const px = (e.clientX - rect.left) / rect.width - 0.5;
+          const py = (e.clientY - rect.top) / rect.height - 0.5;
+          heroImg.style.transform = `translate3d(${px*22}px, ${py*12}px, 0) rotate(${px*1.2}deg)`;
+        });
+        heroInner.addEventListener('mouseleave', ()=>{ heroImg.style.transform='translate3d(0,0,0)'; });
+      }
+
+      // tilt cards using pointermove
+      document.querySelectorAll('.info-card').forEach(card=>{
+        const inner = document.createElement('div'); inner.className='info-card-inner';
+        while(card.firstChild){ inner.appendChild(card.firstChild); }
+        card.appendChild(inner);
+        card.addEventListener('pointermove', e=>{
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left)/r.width - 0.5;
+          const py = (e.clientY - r.top)/r.height - 0.5;
+          inner.style.transform = `rotateY(${px*-8}deg) rotateX(${py*8}deg) translateZ(12px)`;
+        });
+        card.addEventListener('pointerleave', ()=>{ inner.style.transform='none'; });
+      });
+    })();
+  </script>
 </body>
 </html>
