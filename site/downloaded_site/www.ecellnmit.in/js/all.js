@@ -1274,17 +1274,25 @@ function initWorkFilter(){
      });
 
      if (window.location.hash) {
-         $(".filter").each(function(){
-             if ($(this).attr("data-filter") == "." + window.location.hash.replace("#", "")) {
-                 $(this).trigger('click');
+        try{
+            var rawHash = window.location.hash || '';
+            var cleanHash = rawHash.replace(/^#/, '').split(/[\?#]/)[0];
+            if (cleanHash) {
+                $(".filter").each(function(){
+                    if ($(this).attr("data-filter") == "." + cleanHash) {
+                        $(this).trigger('click');
 
-                 $("html, body").animate({
-                     scrollTop: $("#portfolio").offset().top
-                 });
+                        $("html, body").animate({
+                            scrollTop: $("#portfolio").offset().top
+                        });
 
-             }
-         });
-     }
+                    }
+                });
+            }
+        }catch(e){
+            console.warn('Filter hash processing skipped due to invalid hash:', window.location.hash);
+        }
+    }
 
      work_grid.imagesLoaded(function(){
          work_grid.isotope({
