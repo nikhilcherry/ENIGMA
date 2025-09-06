@@ -1,0 +1,1 @@
+so first i decided to make a scraper which scrapes all the data from a specific website here it is https://www.ecellnmit.in/ , the name of that file is ecell mirror and all the extracted data is present over there
