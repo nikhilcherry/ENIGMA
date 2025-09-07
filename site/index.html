@@ -150,6 +150,27 @@
       </div>
     </section>
 
+    <!-- Testimonials -->
+    <section id="testimonials" class="section section-testimonials">
+      <div class="container">
+        <h2 class="section-title center">What people say?</h2>
+        <div class="testimonial-list">
+          <blockquote class="testimonial white">
+            <p>"Happy to interact with innovative minds.”</p>
+            <footer class="testimonial-author">Aanshul Sadaria, SDE GOOGLE</footer>
+          </blockquote>
+          <blockquote class="testimonial white">
+            <p>"After visiting E-Cell NMIT event, can surely guarantee that there are a plenty of Startups on their way by NMITIANS."</p>
+            <footer class="testimonial-author">Ankush Sehgal, Founder and CEO of WorthyNetwork OPC PVT. Ltd.</footer>
+          </blockquote>
+          <blockquote class="testimonial white">
+            <p>“Had a great time interacting with the curious and keen audience.”</p>
+            <footer class="testimonial-author">Harshit Srivastava, IIFT DELHI</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
     <!-- Resources -->
     <section id="resources" class="section section-resources">
       <div class="container">
@@ -342,6 +363,82 @@
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }catch(e){}
+    })();
+  </script>
+  <script>
+    (function(){
+      // easing function (cubic) for smooth scroll
+      function easeInOutCubic(t){ return t<0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+      function smoothScrollTo(targetY, duration){
+        var start = window.pageYOffset || document.documentElement.scrollTop;
+        var diff = targetY - start;
+        var startTime = performance.now();
+        return new Promise(function(resolve){
+          function step(now){
+            var time = Math.min(1, (now - startTime) / duration);
+            var eased = easeInOutCubic(time);
+            window.scrollTo(0, Math.round(start + diff * eased));
+            if(time < 1) requestAnimationFrame(step);
+            else resolve();
+          }
+          requestAnimationFrame(step);
+        });
+      }
+
+      // Intercept anchor clicks for enhanced animated scrolling and button feedback
+      document.addEventListener('click', function(e){
+        try{
+          var a = e.target.closest('a[href^="#"]');
+          if(!a) return;
+          var href = a.getAttribute('href');
+          if(!href || href === '#' || href === '#!') return;
+          var id = href.slice(1);
+          var target = document.getElementById(id);
+          if(!target) return; // let normal behavior if no element
+          e.preventDefault();
+
+          var header = document.querySelector('.site-header');
+          var headerH = header ? header.offsetHeight : 0;
+          var rect = target.getBoundingClientRect();
+          var targetY = Math.max(0, rect.top + window.pageYOffset - headerH - 12);
+
+          // tactile press feedback
+          a.classList.add('btn-press');
+          setTimeout(function(){ a.classList.remove('btn-press'); }, 220);
+
+          // add temporary highlight to target
+          target.classList.remove('scroll-highlight');
+          // force reflow to restart animation
+          void target.offsetWidth;
+          target.classList.add('scroll-highlight');
+
+          smoothScrollTo(targetY, 720).then(function(){
+            setTimeout(function(){ target.classList.remove('scroll-highlight'); }, 700);
+            // focus for accessibility without changing scroll
+            try{ target.setAttribute('tabindex','-1'); target.focus({preventScroll:true}); }catch(err){}
+          });
+        }catch(err){}
+      }, false);
+
+      // IntersectionObserver to play CSS animations when elements enter viewport
+      try{
+        var observer = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){
+              entry.target.classList.add('animate-play');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.animate').forEach(function(el){
+          if(el.classList.contains('animate-infinite')){
+            el.classList.add('animate-play');
+            return;
+          }
+          observer.observe(el);
+        });
+      }catch(e){ /* ignore */ }
     })();
   </script>
 </body>
