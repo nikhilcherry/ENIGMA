@@ -186,22 +186,40 @@
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact (unique interactive) -->
     <section id="contact" class="section section-contact">
-      <div class="container two-col">
-        <div class="col col-text">
-          <h2 class="section-title">Get in touch</h2>
-          <p class="section-subtitle">Collaborations, partnerships, and speaker inquiries are welcome.</p>
-          <p class="contact-note">Reach us via the legacy site contact form or connect with the team during events.</p>
-          <div class="inline-actions">
-            <a class="btn btn-primary" href="#contact">Open Contact Form</a>
-          </div>
+      <div class="container contact-inner two-col">
+        <div class="col col-form">
+          <h2 class="section-title">Let's build something together</h2>
+          <p class="section-subtitle">Collaborations, mentorship & speaker requests — or just say hi.</p>
+
+          <form id="contact-form" class="contact-form" novalidate>
+            <div class="field">
+              <input id="name" name="name" type="text" placeholder=" " required />
+              <label for="name">Your name</label>
+            </div>
+            <div class="field">
+              <input id="email" name="email" type="email" placeholder=" " required />
+              <label for="email">Email</label>
+            </div>
+            <div class="field">
+              <textarea id="message" name="message" rows="4" placeholder=" " required></textarea>
+              <label for="message">Your message</label>
+            </div>
+
+            <div class="contact-meta">
+              <div class="orb-select" role="tablist" aria-label="Preferred contact channel">
+                <button type="button" class="orb-option active" data-channel="email">Email</button>
+                <button type="button" class="orb-option" data-channel="office">Office</button>
+                <button type="button" class="orb-option" data-channel="social">Social</button>
+              </div>
+              <button type="submit" class="btn btn-primary btn-send">Send message</button>
+            </div>
+          </form>
+
+          <div id="contact-toast" class="contact-toast" role="status" aria-live="polite" hidden>Message sent — thanks! We'll reply soon.</div>
         </div>
-        <div class="col col-media">
-          <div class="media-card animate animate-rotate-in">
-            <div class="logo-placeholder">E-Cell Community</div>
-          </div>
-        </div>
+
       </div>
     </section>
   </main>
@@ -424,12 +442,24 @@
       try{
         var observer = new IntersectionObserver(function(entries){
           entries.forEach(function(entry){
+            var el = entry.target;
+            // For infinite animations, keep them playing
+            if(el.classList.contains('animate-infinite')){
+              if(entry.isIntersecting) el.classList.add('animate-play');
+              return;
+            }
+
             if(entry.isIntersecting){
-              entry.target.classList.add('animate-play');
-              observer.unobserve(entry.target);
+              // Restart animation by removing and re-adding the play class
+              el.classList.remove('animate-play');
+              void el.offsetWidth; // force reflow
+              el.classList.add('animate-play');
+            }else{
+              // When leaving viewport, remove play so it can replay on re-entry
+              el.classList.remove('animate-play');
             }
           });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.18 });
 
         document.querySelectorAll('.animate').forEach(function(el){
           if(el.classList.contains('animate-infinite')){
@@ -439,6 +469,59 @@
           observer.observe(el);
         });
       }catch(e){ /* ignore */ }
+    })();
+  </script>
+  <script>
+    (function(){
+      // Contact form interactions and visual orb
+      var form = document.getElementById('contact-form');
+      var nodes = document.querySelectorAll('.orb-node');
+      var options = document.querySelectorAll('.orb-option');
+      var toast = document.getElementById('contact-toast');
+      var center = document.querySelector('.orb-center');
+      var selected = 'email';
+
+      function setSelected(ch){
+        selected = ch;
+        nodes.forEach(function(n){ n.classList.toggle('active', n.dataset.channel === ch); });
+        options.forEach(function(b){ b.classList.toggle('active', b.dataset.channel === ch); });
+      }
+
+      nodes.forEach(function(n){ n.addEventListener('click', function(){ setSelected(n.dataset.channel); n.classList.add('pop'); setTimeout(function(){ n.classList.remove('pop'); }, 400); }); });
+      options.forEach(function(b){ b.addEventListener('click', function(){ setSelected(b.dataset.channel); }); });
+
+      if(form){
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          if(!form.checkValidity()) { form.reportValidity(); return; }
+
+          var sendBtn = form.querySelector('.btn-send');
+          sendBtn.disabled = true; sendBtn.classList.add('sending');
+
+          // animate nodes and center
+          nodes.forEach(function(n, i){
+            n.style.transition = 'transform .46s cubic-bezier(.2,.9,.3,1) '+(i*80)+'ms, box-shadow .46s ease '+(i*80)+'ms';
+            n.style.transform = 'translateY(-22px) scale(1.06)';
+            n.style.boxShadow = '0 16px 48px rgba(47,128,255,0.12)';
+          });
+          if(center) center.classList.add('pulse');
+
+          setTimeout(function(){
+            // show toast
+            if(toast){ toast.hidden = false; toast.classList.add('show'); }
+            // reset visual state
+            nodes.forEach(function(n){ n.style.transform = ''; n.style.boxShadow = ''; n.style.transition = ''; });
+            if(center) center.classList.remove('pulse');
+
+            // reset form after a short delay
+            form.reset(); setSelected('email');
+            setTimeout(function(){ if(toast){ toast.classList.remove('show'); setTimeout(function(){ toast.hidden = true; }, 400); } sendBtn.classList.remove('sending'); sendBtn.disabled = false; }, 2000);
+          }, 950);
+        });
+      }
+
+      // Accessibility: allow keyboard selection of options
+      options.forEach(function(b){ b.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(b.dataset.channel); } }); });
     })();
   </script>
 </body>
