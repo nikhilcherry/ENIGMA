@@ -186,21 +186,49 @@
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact (unique interactive) -->
     <section id="contact" class="section section-contact">
-      <div class="container two-col">
-        <div class="col col-text">
-          <h2 class="section-title">Get in touch</h2>
-          <p class="section-subtitle">Collaborations, partnerships, and speaker inquiries are welcome.</p>
-          <p class="contact-note">Reach us via the legacy site contact form or connect with the team during events.</p>
-          <div class="inline-actions">
-            <a class="btn btn-primary" href="#contact">Open Contact Form</a>
-          </div>
+      <div class="container contact-inner two-col">
+        <div class="col col-form">
+          <h2 class="section-title">Let's build something together</h2>
+          <p class="section-subtitle">Collaborations, mentorship & speaker requests — or just say hi.</p>
+
+          <form id="contact-form" class="contact-form" novalidate>
+            <div class="field">
+              <input id="name" name="name" type="text" placeholder=" " required />
+              <label for="name">Your name</label>
+            </div>
+            <div class="field">
+              <input id="email" name="email" type="email" placeholder=" " required />
+              <label for="email">Email</label>
+            </div>
+            <div class="field">
+              <textarea id="message" name="message" rows="4" placeholder=" " required></textarea>
+              <label for="message">Your message</label>
+            </div>
+
+            <div class="contact-meta">
+              <div class="orb-select" role="tablist" aria-label="Preferred contact channel">
+                <button type="button" class="orb-option active" data-channel="email">Email</button>
+                <button type="button" class="orb-option" data-channel="office">Office</button>
+                <button type="button" class="orb-option" data-channel="social">Social</button>
+              </div>
+              <button type="submit" class="btn btn-primary btn-send">Send message</button>
+            </div>
+          </form>
+
+          <div id="contact-toast" class="contact-toast" role="status" aria-live="polite" hidden>Message sent — thanks! We'll reply soon.</div>
         </div>
-        <div class="col col-media">
-          <div class="media-card animate animate-rotate-in">
-            <div class="logo-placeholder">E-Cell Community</div>
+
+        <div class="col col-visual">
+          <div class="contact-visual" aria-hidden="true">
+            <div class="orb-center"><span class="orb-label">E-Cell</span></div>
+            <svg class="orbit-lines" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r="80" stroke="rgba(255,255,255,0.06)" stroke-width="1" fill="none"/><circle cx="150" cy="150" r="120" stroke="rgba(255,255,255,0.03)" stroke-width="1" fill="none"/></svg>
+            <div class="orb-node node-email active" data-channel="email">✉️</div>
+            <div class="orb-node node-office" data-channel="office">🏫</div>
+            <div class="orb-node node-social" data-channel="social">💬</div>
           </div>
+          <p class="contact-hint">Tap any node to pick a channel. Nodes animate when you send.</p>
         </div>
       </div>
     </section>
