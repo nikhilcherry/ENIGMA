@@ -199,6 +199,12 @@
     </div>
   </footer>
 
+  <a href="#top" class="scroll-top-button" aria-label="Back to top">
+    <svg class="scroll-top-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 5l7 7-1.41 1.41L13 8.83V19h-2V8.83L6.41 13.41 5 12l7-7z"></path>
+    </svg>
+  </a>
+
   <!-- Scripts from legacy for consistency -->
   <script src="downloaded_site/www.ecellnmit.in/js/jquery-3.5.1.min.js"></script>
   <script>
@@ -318,6 +324,24 @@
         apply(saved === 'light' ? 'light' : 'dark');
         if(input){ input.checked = (saved === 'light'); input.addEventListener('change', function(e){ var t = e.target.checked ? 'light' : 'dark'; localStorage.setItem(key,t); apply(t); }); }
       }catch(e){ console.warn('Theme toggle init failed', e); }
+    })();
+  </script>
+  <script>
+    (function(){
+      try{
+        var btn = document.querySelector('.scroll-top-button');
+        if(!btn) return;
+        var onScroll = function(){
+          if(window.pageYOffset > 300){ btn.classList.add('is-visible'); }
+          else { btn.classList.remove('is-visible'); }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }catch(e){}
     })();
   </script>
 </body>
