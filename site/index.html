@@ -424,12 +424,24 @@
       try{
         var observer = new IntersectionObserver(function(entries){
           entries.forEach(function(entry){
+            var el = entry.target;
+            // For infinite animations, keep them playing
+            if(el.classList.contains('animate-infinite')){
+              if(entry.isIntersecting) el.classList.add('animate-play');
+              return;
+            }
+
             if(entry.isIntersecting){
-              entry.target.classList.add('animate-play');
-              observer.unobserve(entry.target);
+              // Restart animation by removing and re-adding the play class
+              el.classList.remove('animate-play');
+              void el.offsetWidth; // force reflow
+              el.classList.add('animate-play');
+            }else{
+              // When leaving viewport, remove play so it can replay on re-entry
+              el.classList.remove('animate-play');
             }
           });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.18 });
 
         document.querySelectorAll('.animate').forEach(function(el){
           if(el.classList.contains('animate-infinite')){
