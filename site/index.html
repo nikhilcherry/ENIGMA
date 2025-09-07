@@ -220,16 +220,6 @@
           <div id="contact-toast" class="contact-toast" role="status" aria-live="polite" hidden>Message sent — thanks! We'll reply soon.</div>
         </div>
 
-        <div class="col col-visual">
-          <div class="contact-visual" aria-hidden="true">
-            <div class="orb-center"><span class="orb-label">E-Cell</span></div>
-            <svg class="orbit-lines" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r="80" stroke="rgba(255,255,255,0.06)" stroke-width="1" fill="none"/><circle cx="150" cy="150" r="120" stroke="rgba(255,255,255,0.03)" stroke-width="1" fill="none"/></svg>
-            <div class="orb-node node-email active" data-channel="email">✉️</div>
-            <div class="orb-node node-office" data-channel="office">🏫</div>
-            <div class="orb-node node-social" data-channel="social">💬</div>
-          </div>
-          <p class="contact-hint">Tap any node to pick a channel. Nodes animate when you send.</p>
-        </div>
       </div>
     </section>
   </main>
@@ -514,14 +504,14 @@
             n.style.transform = 'translateY(-22px) scale(1.06)';
             n.style.boxShadow = '0 16px 48px rgba(47,128,255,0.12)';
           });
-          center.classList.add('pulse');
+          if(center) center.classList.add('pulse');
 
           setTimeout(function(){
             // show toast
             if(toast){ toast.hidden = false; toast.classList.add('show'); }
             // reset visual state
             nodes.forEach(function(n){ n.style.transform = ''; n.style.boxShadow = ''; n.style.transition = ''; });
-            center.classList.remove('pulse');
+            if(center) center.classList.remove('pulse');
 
             // reset form after a short delay
             form.reset(); setSelected('email');
